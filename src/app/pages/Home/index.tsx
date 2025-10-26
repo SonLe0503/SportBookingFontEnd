@@ -17,7 +17,7 @@ import {
 } from "../../../store/accountSlide";
 
 const Home = () => {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const fields = useSelector(selectFields);
   const feedbacks = useSelector(selectFeedbacks);

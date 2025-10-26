@@ -1,21 +1,30 @@
+import ModalFeedback from "../../../components/modal/ModalFeedback";
+import { useAppDispatch } from "../../../../store";
+import {
+  actionGetBookings,
+  selectBookingList,
+} from "../../../../store/bookingSlide";
 import { Button } from "antd";
 import dayjs from "dayjs";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { selectInfoLogin } from "../../../../store/authSlide";
+import ModalInvoice from "../../../components/modal/ModalInvoice";
 
 const History = () => {
-  const data = [
-    {
-      id: 1,
-      name: "Sân cầu lông 368",
-      timeStart: "2025-09-15T07:00:00",
-      timeEnd: "2025-09-15T09:00:00",
-    },
-    {
-      id: 2,
-      name: "Sân Pickleball he he",
-      timeStart: "2025-09-16T11:00:00",
-      timeEnd: "2025-09-16T07:00:00",
-    },
-  ];
+  const dispatch = useAppDispatch();
+  const bookings = useSelector(selectBookingList);
+  const userInfo = useSelector(selectInfoLogin); // lấy userId
+  const [openModal, setOpenModal] = useState(false);
+  const [openInvoice, setOpenInvoice] = useState(false);
+  const [selectedFieldId, setSelectedFieldId] = useState<number | null>(null);
+  const [selectedBookingId, setSelectedBookingId] = useState<number | null>(
+    null
+  );
+
+  useEffect(() => {
+    dispatch(actionGetBookings());
+  }, [dispatch]);
   return (
     <>
       <div className="w-full flex flex-col">
@@ -23,60 +32,70 @@ const History = () => {
           <div className="rounded-t-[15px] w-full">
             <div className="flex bg-gray-100 rounded-t-[15px]">
               <div className="flex w-full p-2 justify-center text-[14px] text-gray-700">
-                Mã đặt sân{" "}
+                Mã đặt sân
               </div>
               <div className="w-full p-2 flex justify-center text-[14px] text-gray-700">
-                Sân
+                Mã sân
               </div>
               <div className="w-full p-2 flex justify-center text-[14px] text-gray-700">
-                Thời gian bắt đầu
+                Ngày đặt
               </div>
               <div className="w-full p-2 flex justify-center text-[14px] text-gray-700">
-                Thời gian kết thúc
+                Giờ bắt đầu
               </div>
-              {/* <div className="w-full p-2 flex justify-center text-[14px] text-gray-700">
-                Trạng thái
-              </div> */}
+              <div className="w-full p-2 flex justify-center text-[14px] text-gray-700">
+                Giờ kết thúc
+              </div>
               <div className="w-full p-2"></div>
               <div className="w-full p-2"></div>
             </div>
 
-            {data.map((user) => (
-              <div key={user.id} className="flex items-center">
+            {bookings?.map((b) => (
+              <div key={b.bookingId} className="flex items-center">
                 <div className="w-full p-2 flex text-[14px] text-gray-700 justify-center">
-                  {user.id}
+                  {b.bookingId}
                 </div>
-                <div
-                  className="w-full p-2 flex text-[14px] text-gray-700 truncate relative cursor-pointer group"
-                  title={user.name}
-                >
-                  {user.name}
+                <div className="w-full p-2 flex text-[14px] text-gray-700 justify-center">
+                  {b.fieldId}
                 </div>
-                <div
-                  className="w-full p-2 flex truncate relative text-[14px] text-gray-700 cursor-pointer group"
-                  title={user.timeStart}
-                >
-                  {dayjs(user.timeStart).format("DD/MM/YYYY HH:mm")}
+                <div className="w-full p-2 flex text-[14px] text-gray-700 justify-center">
+                  {dayjs(b.bookingDate).format("DD/MM/YYYY")}
                 </div>
-                <div
-                  className="w-full p-2 flex truncate relative text-[14px] text-gray-700 cursor-pointer group"
-                  title={user.timeEnd}
-                >
-                  {dayjs(user.timeEnd).format("DD/MM/YYYY HH:mm")}
+                <div className="w-full p-2 flex text-[14px] text-gray-700 justify-center">
+                  {b.startTime}
                 </div>
-                <div className="w-full p-2 flex gap-2">
-                  {dayjs() < dayjs(user.timeStart) ? (
-                    <Button color="danger" variant="solid">
+                <div className="w-full p-2 flex text-[14px] text-gray-700 justify-center">
+                  {b.endTime}
+                </div>
+
+                <div className="w-full p-2 flex gap-2 justify-center">
+                  {dayjs() < dayjs(`${b.bookingDate} ${b.startTime}`) ? (
+                    <Button color="danger" variant="solid" className="hidden">
                       Huỷ sân
                     </Button>
                   ) : (
-                    <Button color="yellow" variant="solid">
+                    <Button
+                      color="yellow"
+                      variant="solid"
+                      onClick={() => {
+                        setSelectedFieldId(b.fieldId);
+                        setOpenModal(true);
+                      }}
+                    >
                       Đánh giá
                     </Button>
                   )}
                 </div>
-                <div className="w-full p-2 flex gap-2">
-                  <Button color="blue" variant="solid">
+
+                <div className="w-full p-2 flex justify-center">
+                  <Button
+                    color="blue"
+                    variant="solid"
+                    onClick={() => {
+                      setSelectedBookingId(b.bookingId);
+                      setOpenInvoice(true);
+                    }}
+                  >
                     Hoá đơn
                   </Button>
                 </div>
@@ -85,7 +104,19 @@ const History = () => {
           </div>
         </div>
       </div>
+      <ModalFeedback
+        open={openModal}
+        onClose={() => setOpenModal(false)}
+        fieldId={selectedFieldId}
+        userId={Number(userInfo.userId)}
+      />
+      <ModalInvoice
+        open={openInvoice}
+        onClose={() => setOpenInvoice(false)}
+        bookingId={selectedBookingId}
+      />
     </>
   );
 };
+
 export default History;

@@ -4,6 +4,9 @@ import { Button, Input, message, Modal } from "antd";
 import { useState } from "react";
 import { hours } from "../../../constants/app";
 import ModalPayment from "./ModalPayment";
+import { useSelector } from "react-redux";
+import { selectInfoLogin } from "../../../store/authSlide";
+import ReactGA from "react-ga4";
 
 interface ModalBookingProps {
   isModalOpen: boolean;
@@ -16,6 +19,7 @@ interface ModalBookingProps {
 const ModalBooking = (props: ModalBookingProps,) => {
   const { isModalOpen, setIsModalOpen, totalHour, totalPrice, selected, fieldId } = props;
   const dispatch = useAppDispatch();
+  const user = useSelector(selectInfoLogin)
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -45,7 +49,7 @@ const ModalBooking = (props: ModalBookingProps,) => {
 
         const res = await dispatch(
           actionCreateBooking({
-            userId: 0, // bạn cần lấy userId hiện tại từ state hoặc context
+            userId: Number(user.userId), // bạn cần lấy userId hiện tại từ state hoặc context
             fieldId: fieldId,
             bookingDate: new Date().toISOString().slice(0, 10),
             startTime,
@@ -61,6 +65,13 @@ const ModalBooking = (props: ModalBookingProps,) => {
       setCreatedBookingId(lastBookingId);
       setIsModalOpen(false);
       dispatch(actionGetBookings()); // reload dữ liệu bảng
+      ReactGA.event({
+      category: "Booking",
+      action: "Book Field",
+      label: `Field ID: ${fieldId}`,
+      value: totalPrice,
+      nonInteraction: false,
+    });
     } catch (error) {
       console.error(error);
       message.error("Đặt lịch thất bại, thử lại sau");

@@ -6,6 +6,9 @@ import Routers from "./layouts/Routers";
 import { persistor, store } from "./store";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
+import ReactGA from "react-ga4";
+
+ReactGA.initialize("G-LYT06CW5W2");
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

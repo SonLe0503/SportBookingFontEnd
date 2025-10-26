@@ -10,14 +10,12 @@ const DefaultLayout = (props: DefaultLayoutProps) => {
   const { children } = props;
   return (
     <div className=" flex-col flex h-screen">
-      <Header/>
+      <Header />
       <div className="flex mt-[85px] flex-1">
-        <Sidebar/>
-        <div className="flex-1 overflow-auto ml-[76px]">
-          {children}
-        </div>
+        <Sidebar />
+        <div className="flex-1 overflow-auto ml-[76px]">{children}</div>
       </div>
     </div>
-  )
-}
+  );
+};
 export default DefaultLayout;

@@ -2,7 +2,12 @@ import { message, Modal, Radio, Typography, Image } from "antd";
 import { useAppDispatch } from "../../../store";
 import { useState } from "react";
 import { actionCreatePayment } from "../../../store/paymentSlide";
-
+import {
+  actionUpdateBooking,
+  selectBookingList,
+} from "../../../store/bookingSlide";
+import { useSelector } from "react-redux";
+// import { selectInfoLogin } from "../../../store/authSlide";
 
 interface ModalPaymentProps {
   isOpen: boolean;
@@ -11,9 +16,18 @@ interface ModalPaymentProps {
   totalPrice: number;
 }
 
-const ModalPayment = ({ isOpen, onClose, bookingId, totalPrice }: ModalPaymentProps) => {
+const ModalPayment = ({
+  isOpen,
+  onClose,
+  bookingId,
+  totalPrice,
+}: ModalPaymentProps) => {
   const [method, setMethod] = useState<"QR" | "COD" | "">("");
+  // const user = useSelector(selectInfoLogin);
+  const bookings = useSelector(selectBookingList);
   const dispatch = useAppDispatch();
+
+  const booking = bookings.find((b) => b.bookingId === bookingId);
 
   const handlePayment = async () => {
     if (!method) {
@@ -31,6 +45,15 @@ const ModalPayment = ({ isOpen, onClose, bookingId, totalPrice }: ModalPaymentPr
           status: method === "QR" ? "PAID" : "PENDING",
         })
       ).unwrap();
+
+      if (method === "QR" && booking) {
+        await dispatch(
+          actionUpdateBooking({
+            ...booking, // lấy toàn bộ dữ liệu gốc
+            status: "SUCCESS", // chỉ đổi trạng thái
+          })
+        ).unwrap();
+      }
 
       message.success("Thanh toán thành công!");
       onClose();
@@ -68,7 +91,7 @@ const ModalPayment = ({ isOpen, onClose, bookingId, totalPrice }: ModalPaymentPr
           <div className="flex flex-col items-center mt-4">
             <Typography.Text>Quét mã QR để thanh toán</Typography.Text>
             <Image
-              src="/qr-demo.png" // 🧠 Đặt ảnh QR thật tại public/qr-demo.png
+              src={`https://img.vietqr.io/image/MB-0362826869-compact.png?amount=${totalPrice}&addInfo=Thanh+toan+don+${bookingId}&accountName=Le+Son`}
               alt="QR code"
               width={200}
               preview={false}
@@ -84,8 +107,8 @@ const ModalPayment = ({ isOpen, onClose, bookingId, totalPrice }: ModalPaymentPr
         {method === "COD" && (
           <div className="mt-4 bg-gray-50 p-3 rounded-md border">
             <Typography.Text>
-              Bạn sẽ thanh toán trực tiếp khi đến sân.  
-              Vui lòng đến đúng giờ để đảm bảo giữ sân.
+              Bạn sẽ thanh toán trực tiếp khi đến sân. Vui lòng đến đúng giờ để
+              đảm bảo giữ sân.
             </Typography.Text>
           </div>
         )}

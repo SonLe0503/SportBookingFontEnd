@@ -8,8 +8,7 @@ import { request } from "../utils/request";
 
 import type { RootState } from "./index";
 
-
-interface IInfoLogin  {
+interface IInfoLogin {
   accessToken: string;
   role: EUserRole;
   email: string;
@@ -43,19 +42,19 @@ const initialState: IInitialState = {
 
 export const actionLogin = createAsyncThunk(
   "auth/actionLogin",
-  async(data:DynamicKeyObject, {rejectWithValue}) => {
+  async (data: DynamicKeyObject, { rejectWithValue }) => {
     const { ...payload } = data;
-    try{
+    try {
       return await request({
         url: `/Auth/Login`,
         method: "POST",
         data: payload,
-      })
-    }catch(error){
+      });
+    } catch (error) {
       return rejectWithValue(error);
     }
   }
-)
+);
 
 export const actionRegister = createAsyncThunk(
   "auth/actionRegister",
@@ -64,7 +63,7 @@ export const actionRegister = createAsyncThunk(
       const res = await request({
         url: `/Auth/Register`,
         method: "POST",
-        data,
+        params: data,
       });
       return res;
     } catch (error) {
@@ -73,8 +72,7 @@ export const actionRegister = createAsyncThunk(
   }
 );
 
-
-export const slice =  createSlice({
+export const slice = createSlice({
   name: "auth",
   initialState,
   reducers: {
@@ -84,36 +82,37 @@ export const slice =  createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(actionLogin.fulfilled, (state, action) => {
-      const token = action.payload?.data?.token ?? "";
-      if (token) {
-        const decodedToken: any = jwtDecode(token);
-        state.infoLogin = {
-          ...state.infoLogin,
-          accessToken: token,
-          role: decodedToken["role"],        // "Admin" | "Customer"
-          email: decodedToken["email"],
-          userId: decodedToken["nameid"],
-          expiresTime: decodedToken["exp"],  // số giây từ epoch
-        };
-        state.isLogin = true;
-      }
-    })
-    .addCase(actionLogin.rejected, (state) => {
-      state.infoLogin = initialState.infoLogin;
-      state.isLogin = false;
-    })
+    builder
+      .addCase(actionLogin.fulfilled, (state, action) => {
+        const token = action.payload?.data?.token ?? "";
+        if (token) {
+          const decodedToken: any = jwtDecode(token);
+          state.infoLogin = {
+            ...state.infoLogin,
+            accessToken: token,
+            role: decodedToken["role"], // "Admin" | "Customer"
+            email: decodedToken["email"],
+            userId: decodedToken["nameid"],
+            expiresTime: decodedToken["exp"], // số giây từ epoch
+          };
+          state.isLogin = true;
+        }
+      })
+      .addCase(actionLogin.rejected, (state) => {
+        state.infoLogin = initialState.infoLogin;
+        state.isLogin = false;
+      });
     builder
       .addCase(actionRegister.fulfilled, () => {
         console.log("✅ Đăng ký thành công");
       })
-      .addCase(actionRegister.rejected, (state, action) => {
+      .addCase(actionRegister.rejected, (_state, action) => {
         console.error("❌ Đăng ký thất bại:", action.payload);
       });
-  }
-})
+  },
+});
 export const { logout } = slice.actions;
 export const selectIsLogin = (state: RootState) => state.auth.isLogin;
 export const selectInfoLogin = (state: RootState) => state.auth.infoLogin;
 
-export default slice.reducer
+export default slice.reducer;

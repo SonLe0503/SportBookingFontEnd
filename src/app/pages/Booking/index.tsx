@@ -34,7 +34,7 @@ const Booking = () => {
   const dispatch = useAppDispatch();
   const bookingList = useSelector(selectBookingList);
   const fieldDetail = useSelector(selectSelectedField);
-  const pricePerSlot = fieldDetail?.price || 0;
+  const pricePerSlot = (fieldDetail?.price || 0) / 2;
   useEffect(() => {
     dispatch(actionGetBookings());
     if (id) {

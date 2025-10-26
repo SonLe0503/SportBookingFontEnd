@@ -4,14 +4,18 @@ import {
   selectIsLogin,
 } from "../../../store/authSlide";
 import { useAppDispatch } from "../../../store";
-import { LogoutOutlined, UserOutlined } from "@ant-design/icons";
+import { LoginOutlined, LogoutOutlined, UserOutlined } from "@ant-design/icons";
 import { Avatar, Button, Drawer, message } from "antd";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import logo from "../../../assets/image/sportspace_logo.jpeg";
+import { useNavigate } from "react-router-dom";
+import URL from "../../../constants/url";
 
 const Header = () => {
   const [open, setOpen] = useState(false);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const infoLogin = useSelector(selectInfoLogin);
   const isLogin = useSelector(selectIsLogin);
 
@@ -27,22 +31,30 @@ const Header = () => {
   return (
     <>
       {/* 🔹 Header */}
-      <div className="z-10 fixed flex items-center w-full h-[85px] justify-between pt-[10px] pb-[10px] px-[10px] bg-white shadow-md">
+      <div className="z-20 fixed flex items-center justify-between w-full h-[80px] px-6 backdrop-blur-md border-b border-gray-100">
         {/* Avatar mở Drawer */}
         <div
-          className="w-[55px] h-[55px] rounded-full bg-white shadow-md overflow-hidden cursor-pointer flex items-center justify-center"
+          className="w-[55px] h-[55px] rounded-full bg-gradient-to-tr from-[#00B14F] to-[#00E09E] p-[2px] cursor-pointer hover:scale-105 transition-transform"
           onClick={showDrawer}
         >
-          <Avatar
-            src="https://images.pexels.com/photos/29665443/pexels-photo-29665443.jpeg"
-            size={45}
-            icon={<UserOutlined />}
-          />
+          <div className="w-full h-full bg-white rounded-full flex items-center justify-center overflow-hidden">
+            <Avatar
+              src="https://images.pexels.com/photos/29665443/pexels-photo-29665443.jpeg"
+              size={45}
+              icon={<UserOutlined />}
+            />
+          </div>
         </div>
 
-        {/* Logo hoặc icon bên phải */}
+        {/* Logo */}
         <div className="flex items-center justify-center">
-          <div className="w-[42px] h-[42px] bg-gray-200 rounded-full"></div>
+          <div className="w-[60px] h-[60px] rounded-full bg-white shadow-lg overflow-hidden flex items-center justify-center border-[3px] border-[#00B14F] hover:shadow-green-200 hover:scale-105 transition-all duration-300">
+            <img
+              src={logo}
+              alt="SportSpace logo"
+              className="w-full h-full object-cover transition-transform duration-300 hover:rotate-6"
+            />
+          </div>
         </div>
       </div>
 
@@ -52,25 +64,30 @@ const Header = () => {
         open={open}
         closable={false}
         title={
-          <div className="text-center font-semibold text-lg">
+          <div className="text-center font-semibold text-[18px]">
             Thông tin tài khoản
           </div>
         }
       >
         {isLogin ? (
-          <div className="flex flex-col items-center gap-4 mt-2">
+          <div className="flex flex-col items-center gap-4 mt-4">
             <Avatar
               size={100}
               src="https://images.pexels.com/photos/29665443/pexels-photo-29665443.jpeg"
               icon={<UserOutlined />}
+              className="shadow-lg border-[3px] border-[#00B14F]"
             />
+
             <div className="flex flex-col items-center text-center">
               <div className="font-semibold text-lg text-gray-800">
-                {infoLogin.email.split("@")[0]}
+                {infoLogin?.email?.split("@")[0]}
               </div>
               <div className="text-gray-500 text-sm">{infoLogin.email}</div>
               <div className="text-gray-600 text-sm mt-1">
-                Vai trò: <span className="font-medium">{infoLogin.role}</span>
+                Vai trò:{" "}
+                <span className="font-medium text-[#00B14F]">
+                  {infoLogin.role}
+                </span>
               </div>
             </div>
 
@@ -79,14 +96,35 @@ const Header = () => {
               type="primary"
               icon={<LogoutOutlined />}
               onClick={handleLogout}
-              className="mt-3 w-[150px]"
+              className="mt-4 w-[150px] bg-[#00B14F] border-none hover:bg-[#00E09E] text-white font-medium rounded-xl shadow-md"
             >
               Đăng xuất
             </Button>
           </div>
         ) : (
-          <div className="text-center text-gray-500 mt-10">
-            Bạn chưa đăng nhập.
+          <div className="flex flex-col items-center text-center mt-10 space-y-4 px-4">
+            <Avatar
+              size={90}
+              icon={<UserOutlined />}
+              className="shadow-md border border-gray-200"
+            />
+
+            <div className="text-gray-700 font-medium text-base">
+              Bạn chưa đăng nhập tài khoản!
+            </div>
+            <div className="text-gray-500 text-sm leading-relaxed">
+              Hãy đăng nhập để trải nghiệm đầy đủ các tính năng như đặt sân,
+              đánh giá, lưu sân yêu thích và nhiều hơn nữa.
+            </div>
+
+            <Button
+              type="primary"
+              icon={<LoginOutlined />}
+              onClick={() => navigate(URL.Login)}
+              className="mt-2 w-[180px] bg-[#00B14F] border-none hover:bg-[#00E09E] text-white font-medium rounded-xl shadow-md"
+            >
+              Đăng nhập ngay
+            </Button>
           </div>
         )}
       </Drawer>

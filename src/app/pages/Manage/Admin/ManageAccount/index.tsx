@@ -82,9 +82,9 @@ const ManageAccount = () => {
               <div className="w-full p-2 text-center text-[14px] text-gray-700">
                 Role
               </div>
-              <div className="w-full p-2 text-center text-[14px] text-gray-700">
+              {/* <div className="w-full p-2 text-center text-[14px] text-gray-700">
                 Trạng thái
-              </div>
+              </div> */}
               <div className="w-full p-2 text-center text-[14px] text-gray-700">
                 Hành động
               </div>

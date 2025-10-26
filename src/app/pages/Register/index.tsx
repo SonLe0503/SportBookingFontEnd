@@ -9,7 +9,6 @@ import { EUserRole } from "../../../interface/app";
 const Register = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const [form] = Form.useForm();
   const handleSubmit = async (values: any) => {
     try {
       const payload = {
@@ -43,7 +42,7 @@ const Register = () => {
             layout="vertical"
             className="flex flex-col gap-4"
             onFinish={handleSubmit}
-            initialValues={{ role: "customer" }}
+            initialValues={{ role: EUserRole.USER }}
           >
             <Form.Item
               label="Tên đăng nhập"

@@ -2,7 +2,7 @@ import { actionCreateAccount } from "../../../../store/accountSlide";
 import { useAppDispatch } from "../../../../store";
 import { Button, Form, Input, message, Modal, Select } from "antd";
 import { useState } from "react";
-import { EUserRole } from "@/interface/app";
+import { EUserRole } from "../../../../interface/app";
 
 interface ModalAddAccountProps {
   modalAddOpen: boolean;
