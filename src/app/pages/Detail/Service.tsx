@@ -41,9 +41,9 @@ const columns = [
   },
   {
     title: "Giá cố định?",
-    dataIndex: "isFixedPrice",
-    key: "isFixedPrice",
-    render: (value: boolean | null) => (value ? "Có" : "Không"),
+    dataIndex: "fixedPrice",
+    key: "fixedPrice",
+    render: (fixedPrice: number) => fixedPrice?.toLocaleString("vi-VN"),
   },
 ];
 

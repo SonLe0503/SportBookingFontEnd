@@ -1,4 +1,7 @@
-import { actionCreateBooking, actionGetBookings } from "../../../store/bookingSlide";
+import {
+  actionCreateBooking,
+  actionGetBookings,
+} from "../../../store/bookingSlide";
 import { useAppDispatch } from "../../../store";
 import { Button, Input, message, Modal } from "antd";
 import { useState } from "react";
@@ -16,10 +19,17 @@ interface ModalBookingProps {
   selected: { court: string; hour: string }[];
   fieldId: number;
 }
-const ModalBooking = (props: ModalBookingProps,) => {
-  const { isModalOpen, setIsModalOpen, totalHour, totalPrice, selected, fieldId } = props;
+const ModalBooking = (props: ModalBookingProps) => {
+  const {
+    isModalOpen,
+    setIsModalOpen,
+    totalHour,
+    totalPrice,
+    selected,
+    fieldId,
+  } = props;
   const dispatch = useAppDispatch();
-  const user = useSelector(selectInfoLogin)
+  const user = useSelector(selectInfoLogin);
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -28,7 +38,7 @@ const ModalBooking = (props: ModalBookingProps,) => {
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
   const [createdBookingId, setCreatedBookingId] = useState<number | null>(null);
 
-   const handleOk = async () => {
+  const handleOk = async () => {
     if (!name || !phone) {
       message.error("Vui lòng nhập tên và số điện thoại");
       return;
@@ -64,14 +74,15 @@ const ModalBooking = (props: ModalBookingProps,) => {
       message.success("Đặt lịch thành công!");
       setCreatedBookingId(lastBookingId);
       setIsModalOpen(false);
+      setIsPaymentOpen(true);
       dispatch(actionGetBookings()); // reload dữ liệu bảng
       ReactGA.event({
-      category: "Booking",
-      action: "Book Field",
-      label: `Field ID: ${fieldId}`,
-      value: totalPrice,
-      nonInteraction: false,
-    });
+        category: "Booking",
+        action: "Book Field",
+        label: `Field ID: ${fieldId}`,
+        value: totalPrice,
+        nonInteraction: false,
+      });
     } catch (error) {
       console.error(error);
       message.error("Đặt lịch thất bại, thử lại sau");
@@ -86,73 +97,73 @@ const ModalBooking = (props: ModalBookingProps,) => {
   return (
     <>
       <Modal
-      open={isModalOpen}
-      onOk={handleOk}
-      onCancel={handleCancel}
-      footer={null}
-      centered
-      width={500}
-      className="rounded-2xl"
-    >
-      <div className="flex flex-col gap-6">
-        <div className="text-center text-[24px] font-bold text-gray-800">
-          Đặt lịch trực quan
-        </div>
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        footer={null}
+        centered
+        width={500}
+        className="rounded-2xl"
+      >
+        <div className="flex flex-col gap-6">
+          <div className="text-center text-[24px] font-bold text-gray-800">
+            Đặt lịch trực quan
+          </div>
 
-        <div className="bg-gray-50 rounded-xl p-4 shadow-inner">
-          <div className="text-lg font-semibold mb-2">Thông tin lịch đặt</div>
-          <div className="flex justify-between py-1">
-            <span className="text-gray-600">Ngày:</span>
-            <span className="font-medium text-gray-800">
-              {new Date().toLocaleDateString("vi-VN")}
-            </span>
+          <div className="bg-gray-50 rounded-xl p-4 shadow-inner">
+            <div className="text-lg font-semibold mb-2">Thông tin lịch đặt</div>
+            <div className="flex justify-between py-1">
+              <span className="text-gray-600">Ngày:</span>
+              <span className="font-medium text-gray-800">
+                {new Date().toLocaleDateString("vi-VN")}
+              </span>
+            </div>
+            <div className="flex justify-between py-1">
+              <span className="text-gray-600">Tổng Giờ:</span>
+              <span className="font-medium text-gray-800">{totalHour}</span>
+            </div>
+            <div className="flex justify-between py-1">
+              <span className="text-gray-600">Tổng tiền:</span>
+              <span className="font-medium text-blue-600">
+                {totalPrice.toLocaleString("vi-VN")} VND
+              </span>
+            </div>
           </div>
-          <div className="flex justify-between py-1">
-            <span className="text-gray-600">Tổng Giờ:</span>
-            <span className="font-medium text-gray-800">{totalHour}</span>
-          </div>
-          <div className="flex justify-between py-1">
-            <span className="text-gray-600">Tổng tiền:</span>
-            <span className="font-medium text-blue-600">
-              {totalPrice.toLocaleString("vi-VN")} VND
-            </span>
-          </div>
-        </div>
 
-        <div className="space-y-4">
-          <div>
-            <label className="block text-gray-700 font-medium mb-1">
-              Tên của bạn
-            </label>
-            <Input
-              placeholder="Nhập tên của bạn"
-              className="rounded-lg"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
+          <div className="space-y-4">
+            <div>
+              <label className="block text-gray-700 font-medium mb-1">
+                Tên của bạn
+              </label>
+              <Input
+                placeholder="Nhập tên của bạn"
+                className="rounded-lg"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="block text-gray-700 font-medium mb-1">
+                Số điện thoại
+              </label>
+              <Input
+                placeholder="Nhập số điện thoại"
+                className="rounded-lg"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+              />
+            </div>
           </div>
-          <div>
-            <label className="block text-gray-700 font-medium mb-1">
-              Số điện thoại
-            </label>
-            <Input
-              placeholder="Nhập số điện thoại"
-              className="rounded-lg"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-            />
-          </div>
-        </div>
 
-        <div className="flex justify-end gap-3">
-          <Button onClick={handleCancel}>Hủy</Button>
-          <Button type="primary" onClick={handleOk} loading={loading}>
-            Xác nhận
-          </Button>
+          <div className="flex justify-end gap-3">
+            <Button onClick={handleCancel}>Hủy</Button>
+            <Button type="primary" onClick={handleOk} loading={loading}>
+              Xác nhận
+            </Button>
+          </div>
         </div>
-      </div>
-    </Modal>
-    {createdBookingId && (
+      </Modal>
+      {createdBookingId && (
         <ModalPayment
           isOpen={isPaymentOpen}
           onClose={() => setIsPaymentOpen(false)}

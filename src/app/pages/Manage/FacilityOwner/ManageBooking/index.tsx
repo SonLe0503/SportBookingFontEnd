@@ -14,8 +14,6 @@ import {
   selectBookingList,
 } from "../../../../../store/bookingSlide";
 
-const courts: string[] = ["A", "B", "C", "D", "E", "F"];
-
 type Status = "empty" | "booked" | "locked" | "event";
 
 const statusColors: Record<Status, string> = {
@@ -25,7 +23,7 @@ const statusColors: Record<Status, string> = {
   event: "bg-purple-400",
 };
 
-const pricePerSlot = 100000;
+// const pricePerSlot = 100000;
 
 const ManageBooking = () => {
   const dispatch = useAppDispatch();
@@ -40,6 +38,18 @@ const ManageBooking = () => {
   const [selectedFieldId, setSelectedFieldId] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalInfo, setModalInfo] = useState(false);
+
+  const pricePerSlot = useMemo(() => {
+  const selectedField = fields.find((f) => f.fieldId === selectedFieldId);
+  return selectedField ? (selectedField.price || 0) / 2 : 0;
+}, [fields, selectedFieldId]);
+
+  const courts = useMemo(() => {
+  const selectedField = fields.find((f) => f.fieldId === selectedFieldId);
+  const courtCount = Number(selectedField?.courtDetails || 0); // "6" -> 6
+  if (isNaN(courtCount) || courtCount <= 0) return [];
+  return Array.from({ length: courtCount }, (_, i) => `Sân ${i + 1}`);
+}, [fields, selectedFieldId]);
 
   useEffect(() => {
     dispatch(actionGetFields());

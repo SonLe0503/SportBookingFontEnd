@@ -13,13 +13,15 @@ export interface IField {
   price: number;
   description: string;
   image: string;
+  avatar: string;
   ownerId: number;
   type?: string | null;
   openTime?: string | null;
   closeTime?: string | null;
   openDays?: string | null;
-  isFixedPrice?: boolean | null;
+  fixedPrice?: string | null;
   link?: string | null;
+  courtDetails: string;
 }
 
 /* ----------------------------- STATE TYPE ----------------------------- */
@@ -87,7 +89,9 @@ export const actionCreateField = createAsyncThunk(
       if (data.imageFile) {
         formData.append("ImageFile", data.imageFile); // phải trùng với DTO backend
       }
-
+      if (data.avatarFile) {
+        formData.append("AvatarFile", data.avatarFile);
+      }
       const res = await request({
         url: `/admin/Fields`,
         method: "POST",
@@ -116,6 +120,9 @@ export const actionUpdateField = createAsyncThunk(
 
       if (data.imageFile) {
         formData.append("ImageFile", data.imageFile);
+      }
+      if (data.avatarFile) {
+        formData.append("AvatarFile", data.avatarFile);
       }
 
       const res = await request({

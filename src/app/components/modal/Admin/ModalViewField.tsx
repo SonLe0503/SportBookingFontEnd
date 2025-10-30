@@ -42,7 +42,7 @@ const ModalViewField = ({ isOpenModalViewField, setIsOpenModalViewField, data }:
           <p><strong>Ngày hoạt động:</strong> {data?.openDays}</p>
           {/* <p><strong>Khung giờ:</strong> {data?.openTime}</p> */}
           <p><strong>Giá cố định:</strong> {data?.price}</p>
-          {/* <p><strong>Giá không cố định:</strong> {data.notfixed}</p> */}
+          <p><strong>Giá không cố định:</strong> {data?.fixedPrice}</p>
           {data?.link && (
             <p>
               <strong>Link:</strong>{" "}

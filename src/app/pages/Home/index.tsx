@@ -20,6 +20,7 @@ const Home = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const fields = useSelector(selectFields);
+  console.log("🧩 fields trong Home:", fields);
   const feedbacks = useSelector(selectFeedbacks);
   const accounts = useSelector(selectAccountList);
   const [searchName, setSearchName] = useState("");
@@ -77,8 +78,8 @@ const Home = () => {
             >
               <div className="relative h-[60%] w-full rounded-[10px]">
                 <img
-                  src={index.image}
-                  alt=""
+                  src={`http://sportspace.somee.com${index.image}`}
+                  alt={index.fieldName}
                   className="w-full h-full rounded-[10px]"
                   onClick={() => handleClickDetail(index.fieldId)}
                 />
@@ -113,7 +114,7 @@ const Home = () => {
                 <div className="flex gap-3">
                   <Avatar
                     size={60}
-                    src="https://images.pexels.com/photos/29665443/pexels-photo-29665443.jpeg"
+                    src={`http://sportspace.somee.com${index.avatar}`}
                   />
                   <div className="text-sm">
                     <div className="font-semibold">{index.fieldName}</div>

@@ -21,7 +21,7 @@ const FeedBack = (props: FeedBackProps) => {
     return {
       ...fb,
       userName: user?.username || "Người dùng ẩn danh",
-      userAvatar: "https://cdn-icons-png.flaticon.com/512/1077/1077012.png",
+      userAvatar: user?.avatar || "",
     };
   });
   return (

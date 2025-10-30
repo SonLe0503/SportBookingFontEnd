@@ -11,9 +11,10 @@ import type { RootState } from "./index";
 interface IInfoLogin {
   accessToken: string;
   role: EUserRole;
-  email: string;
+  username: string;
   userId: string;
   expiresTime: number;
+  avatar: string;
 }
 
 type IInitialState = {
@@ -29,8 +30,9 @@ const initialState: IInitialState = {
   infoLogin: {
     accessToken: "",
     role: EUserRole.USER,
-    email: "",
+    username: "",
     userId: "",
+    avatar: "",
     expiresTime: 0,
   },
   isLogin: false,
@@ -63,7 +65,7 @@ export const actionRegister = createAsyncThunk(
       const res = await request({
         url: `/Auth/Register`,
         method: "POST",
-        params: data,
+        data: data,
       });
       return res;
     } catch (error) {
@@ -91,8 +93,9 @@ export const slice = createSlice({
             ...state.infoLogin,
             accessToken: token,
             role: decodedToken["role"], // "Admin" | "Customer"
-            email: decodedToken["email"],
-            userId: decodedToken["nameid"],
+            username: decodedToken["username"],
+            userId: decodedToken["userID"],
+            avatar: decodedToken["avatar"] || "",
             expiresTime: decodedToken["exp"], // số giây từ epoch
           };
           state.isLogin = true;

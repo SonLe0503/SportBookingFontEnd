@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button, Spin } from "antd";
+
+import { Button, message, Modal, Spin } from "antd";
 import Condition from "./Condition";
 import { useEffect, useMemo, useState } from "react";
 import ModalEditAccount from "../../../../components/modal/Admin/ModalEditAccount";
@@ -7,6 +9,7 @@ import ModalAddAccount from "../../../../components/modal/Admin/ModalAddAccount"
 import { useAppDispatch } from "../../../../../store";
 import { useSelector } from "react-redux";
 import {
+  actionDeleteAccount,
   actionGetAccounts,
   selectAccountList,
 } from "../../../../../store/accountSlide";
@@ -47,6 +50,21 @@ const ManageAccount = () => {
       //   user.status?.toLowerCase().includes(searchStatus.toLowerCase()))
     );
   }, [accountList, searchName, searchEmail]);
+
+  const handleDelete = async (id: number) => {
+    const isConfirmed = window.confirm("Bạn có chắc muốn xóa tài khoản này không?");
+    if (!isConfirmed) return;
+
+    try {
+      setLoading(true);
+      await dispatch(actionDeleteAccount(id)).unwrap();
+      alert("Xóa tài khoản thành công");
+    } catch (error) {
+      alert("Xóa tài khoản thất bại");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -103,7 +121,7 @@ const ManageAccount = () => {
               filteredData.map((user) => (
                 <div
                   key={user.userId}
-                  className="flex items-center border-t hover:bg-gray-50 transition"
+                  className="flex items-center hover:bg-gray-50 transition"
                 >
                   <div
                     className="w-full p-2 text-[14px] text-gray-700 truncate"
@@ -149,7 +167,9 @@ const ManageAccount = () => {
                         Chỉnh sửa
                       </Button>
                       {/* {user.status === "Active" ? ( */}
-                      <Button danger>Block</Button>
+                      <Button danger onClick={() => handleDelete(user.userId)}>
+                        Block
+                      </Button>
                       {/* // ) : (
                       //   <Button type="primary" ghost>
                       //     Unblock

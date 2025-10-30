@@ -4,13 +4,19 @@ import {
   selectIsLogin,
 } from "../../../store/authSlide";
 import { useAppDispatch } from "../../../store";
-import { LoginOutlined, LogoutOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  LoginOutlined,
+  LogoutOutlined,
+  UploadOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import { Avatar, Button, Drawer, message } from "antd";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import logo from "../../../assets/image/sportspace_logo.jpeg";
 import { useNavigate } from "react-router-dom";
 import URL from "../../../constants/url";
+import { actionUploadAvatar } from "../../../store/accountSlide";
 
 const Header = () => {
   const [open, setOpen] = useState(false);
@@ -28,6 +34,13 @@ const Header = () => {
     onClose();
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      dispatch(actionUploadAvatar(file));
+    }
+  };
+
   return (
     <>
       {/* 🔹 Header */}
@@ -39,9 +52,9 @@ const Header = () => {
         >
           <div className="w-full h-full bg-white rounded-full flex items-center justify-center overflow-hidden">
             <Avatar
-              src="https://images.pexels.com/photos/29665443/pexels-photo-29665443.jpeg"
-              size={45}
+              src={isLogin ? `http://sportspace.somee.com${infoLogin?.avatar}` : ""}
               icon={<UserOutlined />}
+              size={45}
             />
           </div>
         </div>
@@ -73,16 +86,36 @@ const Header = () => {
           <div className="flex flex-col items-center gap-4 mt-4">
             <Avatar
               size={100}
-              src="https://images.pexels.com/photos/29665443/pexels-photo-29665443.jpeg"
+              src={`http://sportspace.somee.com${infoLogin?.avatar}`}
               icon={<UserOutlined />}
               className="shadow-lg border-[3px] border-[#00B14F]"
             />
+            {!infoLogin?.avatar && (
+              <div className="mt-2">
+                <input
+                  type="file"
+                  id="avatarUpload"
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  onChange={handleFileChange}
+                />
+                <Button
+                  icon={<UploadOutlined />}
+                  onClick={() =>
+                    document.getElementById("avatarUpload")?.click()
+                  }
+                  className="bg-[#00B14F] hover:bg-[#00E09E] text-white font-medium rounded-lg shadow-sm border-none"
+                >
+                  Cập nhật ảnh đại diện
+                </Button>
+              </div>
+            )}
 
             <div className="flex flex-col items-center text-center">
               <div className="font-semibold text-lg text-gray-800">
-                {infoLogin?.email?.split("@")[0]}
+                {infoLogin?.username?.split("@")[0]}
               </div>
-              <div className="text-gray-500 text-sm">{infoLogin.email}</div>
+              <div className="text-gray-500 text-sm">{infoLogin.username}</div>
               <div className="text-gray-600 text-sm mt-1">
                 Vai trò:{" "}
                 <span className="font-medium text-[#00B14F]">

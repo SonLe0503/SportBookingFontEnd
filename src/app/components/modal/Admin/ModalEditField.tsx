@@ -1,66 +1,119 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from "react";
-import { Avatar, Button, Input, InputNumber, Modal, Select } from "antd";
+import { useEffect, useState } from "react";
+import {
+  Avatar,
+  Button,
+  Input,
+  InputNumber,
+  Modal,
+  Select,
+  Upload,
+  message,
+} from "antd";
+import { UploadOutlined } from "@ant-design/icons";
+import { useAppDispatch } from "../../../../store";
+import { actionUpdateField } from "../../../../store/fieldSlide";
 import type { IField } from "../../../../store/fieldSlide";
-
-// export interface IField {
-//   fieldId: number;
-//   fieldName: string;
-//   location: string;
-//   price: number;
-//   description: string;
-//   image: string;
-//   ownerId: number;
-//   type?: string | null;
-//   openTime?: string | null;
-//   closeTime?: string | null;
-//   openDays?: string | null;
-//   isFixedPrice?: boolean | null;
-//   link?: string | null;
-// }
 
 interface ModalEditFieldProps {
   isOpenModalEdit: boolean;
-  setIsOpenModalEdit: (value: boolean) => (void);
+  setIsOpenModalEdit: (value: boolean) => void;
   data: IField | null;
 }
 
 const ModalEditField = (props: ModalEditFieldProps) => {
-  const {isOpenModalEdit, setIsOpenModalEdit, data} = props;
+  const { isOpenModalEdit, setIsOpenModalEdit, data } = props;
+  const dispatch = useAppDispatch();
+
   const [formData, setFormData] = useState<IField | null>(data);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  // Khi dữ liệu thay đổi (khi mở modal mới)
+  useEffect(() => {
+    setFormData(data);
+    setImageFile(null);
+  }, [data]);
+
   const handleCancel = () => {
     setIsOpenModalEdit(false);
-  }
+  };
+
   const handleChange = (field: keyof IField, value: any) => {
     if (!formData) return;
-    setFormData((prev) => prev ? ({...prev, [field]: value} as IField) : prev)
-  }
+    setFormData((prev) =>
+      prev ? ({ ...prev, [field]: value } as IField) : prev
+    );
+  };
+
+  const handleUploadChange = (info: any) => {
+    const file = info.file.originFileObj;
+    if (file) {
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (formData)
+          setFormData({ ...formData, image: e.target?.result as string });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!formData) return;
+    setLoading(true);
+
+    try {
+      const updateData = {
+        ...formData,
+        imageFile: imageFile || undefined,
+      };
+      await dispatch(actionUpdateField(updateData)).unwrap();
+      message.success("Cập nhật sân thành công!");
+      setIsOpenModalEdit(false);
+    } catch (error) {
+      console.error(error);
+      message.error("Cập nhật sân thất bại. Vui lòng thử lại!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <>
     <Modal
       open={isOpenModalEdit}
       onCancel={handleCancel}
       footer={null}
       centered
-      width={500}
+      width={520}
+      destroyOnClose
       className="rounded-2xl"
     >
       <div className="flex flex-col gap-6">
         {/* Tiêu đề */}
-        <div className="text-center text-[24px] font-bold text-gray-800">
+        <div className="text-center text-[22px] font-bold text-gray-800">
           Chỉnh sửa sân
         </div>
 
-        {/* Hình ảnh sân */}
-        <div className="flex justify-center">
+        {/* Ảnh sân */}
+        <div className="flex justify-center flex-col items-center gap-3">
           <Avatar
-            size={80}
+            size={100}
             shape="square"
-            src={formData?.image || "https://via.placeholder.com/100x80"}
+            src={formData?.image || ""}
+            icon={!formData?.image ? <UploadOutlined /> : undefined}
           />
+          <Upload
+            beforeUpload={() => false}
+            onChange={handleUploadChange}
+            maxCount={1}
+            showUploadList={false}
+          >
+            <Button icon={<UploadOutlined />}>Tải ảnh mới</Button>
+          </Upload>
         </div>
 
-        {/* Form chỉnh sửa */}
+        {/* Form */}
         <div className="space-y-4">
           <div>
             <label className="block text-gray-700 font-medium mb-1">
@@ -98,7 +151,9 @@ const ModalEditField = (props: ModalEditFieldProps) => {
               formatter={(value) =>
                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
               }
-              parser={(value) => Number((value || "").replace(/\$\s?|(,*)/g, ""))}
+              parser={(value) =>
+                Number((value || "").replace(/\$\s?|(,*)/g, ""))
+              }
             />
           </div>
 
@@ -111,23 +166,43 @@ const ModalEditField = (props: ModalEditFieldProps) => {
               onChange={(val) => handleChange("type", val)}
               className="w-full"
               options={[
-                { value: "5-a-side", label: "5-a-side" },
-                { value: "7-a-side", label: "7-a-side" },
+                { value: "badminton", label: "Sân cầu lông" },
+                { value: "football", label: "Sân bóng đá" },
+                { value: "pickleball", label: "Sân Pickleball" },
               ]}
+              placeholder="Chọn loại sân"
+            />
+          </div>
+
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">
+              Mô tả
+            </label>
+            <Input.TextArea
+              value={formData?.description}
+              onChange={(e) => handleChange("description", e.target.value)}
+              className="rounded-lg"
+              rows={3}
+              placeholder="Nhập mô tả về sân"
             />
           </div>
         </div>
 
         {/* Nút hành động */}
-        <div className="flex justify-end gap-3">
+        <div className="flex justify-end gap-3 mt-2">
           <Button onClick={handleCancel}>Hủy</Button>
-          <Button type="primary">
+          <Button
+            type="primary"
+            loading={loading}
+            onClick={handleSubmit}
+            disabled={!formData?.fieldName || !formData?.location}
+          >
             Lưu
           </Button>
         </div>
       </div>
     </Modal>
-    </>
-  )
-}
+  );
+};
+
 export default ModalEditField;

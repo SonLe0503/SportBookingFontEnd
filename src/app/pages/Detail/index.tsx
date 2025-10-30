@@ -125,7 +125,7 @@ const Detail = () => {
             <div className="flex gap-3">
               <Avatar
                 size={60}
-                src={"https://cdn-icons-png.flaticon.com/512/1077/1077012.png"}
+                src={`http://sportspace.somee.com${field?.avatar}`}
               />
               <div className="text-sm flex items-center">
                 <div className="mb-1 text-[20px] font-bold">

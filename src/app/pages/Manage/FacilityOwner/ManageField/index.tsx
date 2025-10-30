@@ -60,14 +60,16 @@ const ManageFieldOwner = () => {
         searchAddress={searchAddress}
         setSearchAddress={setSearchAddress}
       />
-      <Button
-        color="blue"
-        variant="outlined"
-        className="!rounded-[15px]"
-        onClick={() => setOpenRegisterField(true)}
-      >
-        + Thêm sân mới
-      </Button>
+      <div className="flex  justify-end">
+        <Button
+          color="blue"
+          variant="outlined"
+          className="!rounded-[15px] mx-2"
+          onClick={() => setOpenRegisterField(true)}
+        >
+          + Thêm sân mới
+        </Button>
+      </div>
       <div className="m-2 rounded-[15px] flex bg-[#FFFFFF] shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
         <div className="rounded-t-[15px] w-full">
           <div className="flex bg-gray-100 rounded-t-[15px]">
@@ -87,7 +89,7 @@ const ManageFieldOwner = () => {
 
           {filteredData.map((field) => (
             <div key={field.fieldId} className="flex items-center">
-              <div className="w-full p-2 text-[14px] text-gray-700 truncate">
+              <div className="w-full p-2 text-[14px] text-gray-700 text-center truncate">
                 {field.fieldName}
               </div>
               <div className="w-full p-2 text-[14px] text-gray-700 truncate">

@@ -24,7 +24,7 @@ const statusColors: Record<Status, string> = {
   event: "bg-purple-400",
 };
 
-const courts: string[] = ["A", "B", "C", "D", "E", "F"];
+// const courts: string[] = ["A", "B", "C", "D", "E", "F"];
 const Booking = () => {
   const { id } = useParams();
   const [selected, setSelected] = useState<{ court: string; hour: string }[]>(
@@ -47,6 +47,12 @@ const Booking = () => {
     if (!id) return [];
     return bookingList.filter((b) => b.fieldId === Number(id));
   }, [bookingList, id]);
+
+  const courts = useMemo(() => {
+  const count = Number(fieldDetail?.courtDetails || 0); // ví dụ: "6" -> 6
+  if (isNaN(count) || count <= 0) return [];
+  return Array.from({ length: count }, (_, i) => `Sân ${i + 1}`);
+}, [fieldDetail]);
 
   // 🧩 Chuyển dữ liệu booking thành dạng dễ vẽ bảng
   const bookingData: Record<string, Record<string, Status>> = useMemo(() => {

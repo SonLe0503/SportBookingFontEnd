@@ -1,11 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import ModalViewField from "../../../../components/modal/Admin/ModalViewField";
 import ModalEditField from "../../../../components/modal/Admin/ModalEditField";
 import Condition from "./Condition";
-import { Button } from "antd";
+import { Button, message, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { useAppDispatch } from "../../../../../store";
 import { useSelector } from "react-redux";
 import {
+  actionDeleteField,
   actionGetDetailField,
   actionGetFields,
   selectFields,
@@ -23,6 +25,9 @@ const ManageField = () => {
   const [isOpenModalEdit, setIsOpenModalEdit] = useState(false);
   const [isOpenModalViewField, setIsOpenModalViewField] = useState(false);
 
+  const [loading, setLoading] = useState(false); // ✅ loading khi tải danh sách
+  const [loadingDetail, setLoadingDetail] = useState(false); // ✅ loading khi xem hoặc sửa
+
   const filteredData = fields.filter(
     (field) =>
       field.fieldName
@@ -35,18 +40,53 @@ const ManageField = () => {
         .includes(searchAddress.toLowerCase().replace(/\s+/g, ""))
   );
 
-  const handleView = (fieldId: number) => {
-    dispatch(actionGetDetailField(fieldId));
-    setIsOpenModalViewField(true);
+  const handleView = async (fieldId: number) => {
+    setLoadingDetail(true);
+    try {
+      await dispatch(actionGetDetailField(fieldId));
+      setIsOpenModalViewField(true);
+    } finally {
+      setLoadingDetail(false);
+    }
   };
 
-  const handleEdit = (fieldId: number) => {
-    dispatch(actionGetDetailField(fieldId));
-    setIsOpenModalEdit(true);
+  const handleEdit = async (fieldId: number) => {
+    setLoadingDetail(true);
+    try {
+      await dispatch(actionGetDetailField(fieldId));
+      setIsOpenModalEdit(true);
+    } finally {
+      setLoadingDetail(false);
+    }
+  };
+
+  const handleDelete = async (fieldId: number) => {
+    const isConfirmed = window.confirm(
+      "Bạn có chắc muốn xóa tài khoản này không?"
+    );
+    if (!isConfirmed) return;
+
+    setLoadingDetail(true);
+    try {
+      await dispatch(actionDeleteField(fieldId)).unwrap();
+      message.success("Đã block (xóa) sân thành công!");
+    } catch (error) {
+      message.error("Không thể block (xóa) sân, vui lòng thử lại!");
+    } finally {
+      setLoadingDetail(false);
+    }
   };
 
   useEffect(() => {
-    dispatch(actionGetFields());
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        await dispatch(actionGetFields());
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
   }, [dispatch]);
 
   return (
@@ -60,6 +100,9 @@ const ManageField = () => {
           setSearchAddress={setSearchAddress}
           setSearchStatus={setSearchStatus}
         />
+
+        {/* ✅ Hiển thị spinner khi đang tải dữ liệu */}
+
         <div className="m-2 rounded-[15px] flex bg-[#FFFFFF] shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
           <div className="rounded-t-[15px] w-full">
             <div className="flex bg-gray-100 rounded-t-[15px]">
@@ -72,88 +115,63 @@ const ManageField = () => {
               <div className="w-full p-2 flex justify-center text-[14px] text-gray-700">
                 Giá thuê (VND/giờ)
               </div>
-              {/* <div className="w-full p-2 flex justify-center text-[14px] text-gray-700">
-                Trạng thái
-              </div> */}
               <div className="w-full p-2 flex justify-center text-[14px] text-gray-700">
                 Hành động
               </div>
             </div>
 
-            {filteredData.map((field) => (
-              <div key={field.fieldId} className="flex items-center">
-                <div
-                  className="w-full p-2 flex truncate text-[14px] text-gray-700
-             cursor-pointer 
-             relative group"
-                  title={field.fieldName}
-                >
-                  {field.fieldName}
-                </div>
-                <div
-                  className="w-full p-2 flex truncate text-[14px] text-gray-700
-             cursor-pointer 
-             relative group"
-                  title={field.location}
-                >
-                  {field.location}
-                </div>
-                <div className="w-full p-2 flex text-[14px] text-gray-700 justify-center">
-                  {field.price.toLocaleString("vi-VN")}
-                </div>
-                {/* <div className="w-full p-2 flex justify-center">
-                  {user.status === "Active" ? (
-                    <Tag color="blue">Active</Tag>
-                  ) : user.status === "Blocked" ? (
-                    <Tag color="error">Blocked</Tag>
-                  ) : (
-                    <Tag color="orange">Pending</Tag>
-                  )}
-                </div> */}
-                <div className="w-full p-2 flex gap-2">
-                  {/* {user.status === "Pending" ? ( */}
-                  <>
-                    {/* <Button color="green" variant="solid" onClick={() => {}}>
-                        Accept
-                      </Button> */}
+            <Spin spinning={loading || loadingDetail}>
+              {filteredData.map((field) => (
+                <div key={field.fieldId} className="flex items-center">
+                  <div
+                    className="w-full p-2 flex truncate text-[14px] text-gray-700 cursor-pointer relative group"
+                    title={field.fieldName}
+                  >
+                    {field.fieldName}
+                  </div>
+                  <div
+                    className="w-full p-2 flex truncate text-[14px] text-gray-700 cursor-pointer relative group"
+                    title={field.location}
+                  >
+                    {field.location}
+                  </div>
+                  <div className="w-full p-2 flex text-[14px] text-gray-700 justify-center">
+                    {field.price.toLocaleString("vi-VN")}
+                  </div>
+
+                  <div className="w-full p-2 flex gap-2 justify-center">
                     <Button
                       color="blue"
                       variant="outlined"
                       onClick={() => handleView(field.fieldId)}
+                      loading={loadingDetail}
                     >
-                      View
+                      Xem
                     </Button>
-                  </>
-                  {/* // ) : ( */}
-                  <>
                     <Button
                       color="orange"
                       variant="outlined"
                       onClick={() => handleEdit(field.fieldId)}
+                      loading={loadingDetail}
                     >
                       Chỉnh sửa
                     </Button>
-                    {/* {field. === "Active" ? ( */}
-                    <Button color="danger" variant="solid" onClick={() => {}}>
+                    <Button
+                      color="danger"
+                      variant="solid"
+                      onClick={() => handleDelete(field.fieldId)}
+                    >
                       Block
                     </Button>
-                    {/* ) : ( */}
-                    {/* <Button
-                          color="blue"
-                          variant="outlined"
-                          onClick={() => {}}
-                        >
-                          Unblock
-                        </Button>
-                      )} */}
-                  </>
-                  {/* )} */}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </Spin>
           </div>
         </div>
       </div>
+
+      {/* Modal xem & sửa sân */}
       <ModalEditField
         isOpenModalEdit={isOpenModalEdit}
         setIsOpenModalEdit={setIsOpenModalEdit}
@@ -167,4 +185,5 @@ const ManageField = () => {
     </>
   );
 };
+
 export default ManageField;

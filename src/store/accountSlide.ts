@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import { request } from "../utils/request";
@@ -10,6 +11,7 @@ export interface Account {
   email: string;
   phone: string;
   role: string;
+  avatar: string;
   createdAt: string;
 }
 
@@ -128,6 +130,30 @@ export const actionDeleteAccount = createAsyncThunk(
   }
 );
 
+export const actionUploadAvatar = createAsyncThunk(
+  "account/actionUploadAvatar",
+  async (file: File, { rejectWithValue }) => {
+    try {
+      const formData = new FormData();
+      formData.append("AvatarFile", file); // tên trùng với Swagger
+
+      const res = await request({
+        url: "/api/Profile/avatar",
+        method: "POST",
+        data: formData,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      return res.data || res;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+
 const accountSlice = createSlice({
   name: "account",
   initialState,
@@ -209,6 +235,20 @@ const accountSlice = createSlice({
         );
       })
       .addCase(actionDeleteAccount.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+       builder
+      .addCase(actionUploadAvatar.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(actionUploadAvatar.fulfilled, (state, action) => {
+        state.loading = false;
+        if (state.detail) {
+          state.detail.avatar = action.payload.avatar || action.payload; 
+        }
+      })
+      .addCase(actionUploadAvatar.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });
