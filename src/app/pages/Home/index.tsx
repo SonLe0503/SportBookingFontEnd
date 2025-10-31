@@ -78,7 +78,7 @@ const Home = () => {
             >
               <div className="relative h-[60%] w-full rounded-[10px]">
                 <img
-                  src={`http://sportspacevn.somee.com${index.image}`}
+                  src={`https://sportspace.io.vn${index.image}`}
                   alt={index.fieldName}
                   className="w-full h-full rounded-[10px]"
                   onClick={() => handleClickDetail(index.fieldId)}
@@ -108,7 +108,7 @@ const Home = () => {
                     {index.type}
                   </Tag>
                   <Avatar
-                    src={`http://sportspacevn.somee.com${index.avatar}`}
+                    src={`https://sportspace.io.vn${index.avatar}`}
                     className="w-7 h-7 rounded-full object-cover"
                   />
                 </div>
@@ -117,7 +117,7 @@ const Home = () => {
                 <div className="flex gap-3">
                   <Avatar
                     size={60}
-                    src={`http://sportspacevn.somee.com${index.avatar}`}
+                    src={`https://sportspace.io.vn${index.avatar}`}
                   />
                   <div className="text-sm">
                     <div className="font-semibold">{index.fieldName}</div>

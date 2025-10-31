@@ -125,7 +125,7 @@ const Detail = () => {
             <div className="flex gap-3">
               <Avatar
                 size={60}
-                src={`http://sportspacevn.somee.com${field?.avatar}`}
+                src={`https://sportspace.io.vn${field?.avatar}`}
               />
               <div className="text-sm flex items-center">
                 <div className="mb-1 text-[20px] font-bold">

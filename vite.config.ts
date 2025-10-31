@@ -14,7 +14,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "http://sportspacevn.somee.com",
+        target: "https://sportspace.io.vn",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, "/api"),
       },
