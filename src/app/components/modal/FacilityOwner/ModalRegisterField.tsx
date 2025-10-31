@@ -16,6 +16,7 @@ const ModalRegisterField = (props: ModalRegisterFieldProps) => {
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
   const [fileList, setFileList] = useState<any[]>([]);
+  const [fileListAvatar, setFileListAvatar] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const infoLogin = useSelector(selectInfoLogin);
   const handleOk = async () => {
@@ -33,14 +34,19 @@ const ModalRegisterField = (props: ModalRegisterFieldProps) => {
       // chuẩn bị dữ liệu
       const data = {
         fieldName: values.name,
+        type: values.type || "",
+        description: values.description || "",
         location: values.address,
         price: values.fixed || values.notfixed || 0,
-        description: `${values.type || ""} | ${values.day || ""} | ${
-          values.time || ""
-        }`,
+        fixedPrice: values.fixed || "",
+        variablePrice: values.notfixed || "",
+        timeOpen: values.time || "",
+        workingDays: values.day || "",
+        link: values.link || "",
+        courtCount: values.courtDetails || 0,
         ownerId: infoLogin.userId,
         imageFile: fileList[0]?.originFileObj || null,
-        avatarFile: fileList[0]?.originFileObj || null,
+        avatarFile: fileListAvatar[0]?.originFileObj || null,
       };
 
       // gọi Redux action
@@ -52,6 +58,7 @@ const ModalRegisterField = (props: ModalRegisterFieldProps) => {
 
       form.resetFields();
       setFileList([]);
+      setFileListAvatar([]);
       setOpenRegisterField(false);
     } catch (err) {
       console.error("Lỗi tạo sân:", err);
@@ -63,6 +70,7 @@ const ModalRegisterField = (props: ModalRegisterFieldProps) => {
   const handleCancel = () => {
     form.resetFields();
     setFileList([]);
+    setFileListAvatar([]);
     setOpenRegisterField(false);
   };
 
@@ -70,6 +78,12 @@ const ModalRegisterField = (props: ModalRegisterFieldProps) => {
     beforeUpload: () => false, // ngăn upload tự động
     onChange: (info: any) => setFileList(info.fileList),
     fileList,
+  };
+
+  const uploadAvatarProps = {
+    beforeUpload: () => false, // ngăn upload tự động
+    onChange: (info: any) => setFileListAvatar(info.fileList),
+    fileList: fileListAvatar,
   };
 
   return (
@@ -101,6 +115,10 @@ const ModalRegisterField = (props: ModalRegisterFieldProps) => {
               <Input placeholder="VD: Bóng đá, Cầu lông..." />
             </Form.Item>
 
+            <Form.Item name="description" label="Mô tả sân">
+              <Input placeholder="Chi tiết sân" />
+            </Form.Item>
+
             <Form.Item
               name="address"
               label="Địa chỉ"
@@ -129,7 +147,7 @@ const ModalRegisterField = (props: ModalRegisterFieldProps) => {
               <Input placeholder="Dán link Google Maps hoặc Website" />
             </Form.Item>
             <Form.Item name="courtDetails" label="Số lượng sân">
-              <Input placeholder="VD:2"/>
+              <Input placeholder="VD:2" />
             </Form.Item>
 
             <Form.Item name="image" label="Ảnh đại diện">
@@ -138,7 +156,7 @@ const ModalRegisterField = (props: ModalRegisterFieldProps) => {
               </Upload>
             </Form.Item>
             <Form.Item name="avatar" label="Ảnh avatar">
-              <Upload {...uploadProps} maxCount={1} listType="picture">
+              <Upload {...uploadAvatarProps} maxCount={1} listType="picture">
                 <Button icon={<UploadOutlined />}>Chọn ảnh từ máy</Button>
               </Upload>
             </Form.Item>

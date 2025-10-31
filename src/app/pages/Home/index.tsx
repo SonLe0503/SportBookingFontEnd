@@ -78,7 +78,7 @@ const Home = () => {
             >
               <div className="relative h-[60%] w-full rounded-[10px]">
                 <img
-                  src={`http://sportspace.somee.com${index.image}`}
+                  src={`http://sportspacevn.somee.com${index.image}`}
                   alt={index.fieldName}
                   className="w-full h-full rounded-[10px]"
                   onClick={() => handleClickDetail(index.fieldId)}
@@ -96,25 +96,28 @@ const Home = () => {
                 <div className="absolute top-2 right-2 flex items-center gap-2">
                   <Tag
                     color={
-                      index.fieldName.includes("Cầu lông")
+                      index.type === "Cầu lông"
                         ? "blue"
-                        : index.fieldName.includes("Bóng đá")
-                        ? "green"
-                        : index.fieldName.includes("Pickleball")
-                        ? "volcano"
-                        : "default"
+                        : index.type === "Bóng đá"
+                          ? "green"
+                          : index.type === "Pickleball"
+                            ? "volcano"
+                            : "default"
                     }
                   >
                     {index.type}
                   </Tag>
-                  <div className="w-7 h-7 rounded-full bg-gray-400"></div>
+                  <Avatar
+                    src={`http://sportspacevn.somee.com${index.avatar}`}
+                    className="w-7 h-7 rounded-full object-cover"
+                  />
                 </div>
               </div>
               <div className="flex justify-between items-start">
                 <div className="flex gap-3">
                   <Avatar
                     size={60}
-                    src={`http://sportspace.somee.com${index.avatar}`}
+                    src={`http://sportspacevn.somee.com${index.avatar}`}
                   />
                   <div className="text-sm">
                     <div className="font-semibold">{index.fieldName}</div>

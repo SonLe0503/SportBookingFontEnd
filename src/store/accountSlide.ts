@@ -133,15 +133,28 @@ export const actionDeleteAccount = createAsyncThunk(
 export const actionUploadAvatar = createAsyncThunk(
   "account/actionUploadAvatar",
   async (file: File, { rejectWithValue }) => {
+    const authData = localStorage.getItem("persist:auth");
+    let token = "";
+
+    if (authData) {
+      try {
+        const parsed = JSON.parse(authData);
+        const info = JSON.parse(parsed.infoLogin);
+        token = info.accessToken;
+      } catch (error) {
+        console.error("Error parsing auth data:", error);
+      }
+    }
     try {
       const formData = new FormData();
       formData.append("AvatarFile", file); // tên trùng với Swagger
 
       const res = await request({
-        url: "/api/Profile/avatar",
+        url: "/Profile/avatar",
         method: "POST",
         data: formData,
         headers: {
+          "Authorization": `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
       });

@@ -52,7 +52,7 @@ const Header = () => {
         >
           <div className="w-full h-full bg-white rounded-full flex items-center justify-center overflow-hidden">
             <Avatar
-              src={isLogin ? `http://sportspace.somee.com${infoLogin?.avatar}` : ""}
+              src={isLogin ? `http://sportspacevn.somee.com${infoLogin?.avatar}` : ""}
               icon={<UserOutlined />}
               size={45}
             />
@@ -86,7 +86,7 @@ const Header = () => {
           <div className="flex flex-col items-center gap-4 mt-4">
             <Avatar
               size={100}
-              src={`http://sportspace.somee.com${infoLogin?.avatar}`}
+              src={`http://sportspacevn.somee.com${infoLogin?.avatar}`}
               icon={<UserOutlined />}
               className="shadow-lg border-[3px] border-[#00B14F]"
             />
