@@ -179,27 +179,28 @@ const Header = () => {
       </Drawer>
       {/* 🔹 Drawer giới thiệu dự án */}
       <Drawer
-        placement="bottom" // 👉 đổi thành "top" nếu bạn muốn mở từ trên xuống
-        height="85vh"
+        placement="bottom"
+        height="90vh" // 👉 cao hơn một chút cho không gian hiển thị
         onClose={handleCloseIntro}
         open={openIntro}
         closable={false}
       >
-        <div className="px-6 py-4 text-center space-y-8">
-          {/* 🟩 Nội dung 1: Giới thiệu dự án */}
-          <div>
-            <h2 className="text-2xl font-bold text-[#00B14F] mb-3">
+        <div className="px-8 py-6 text-center space-y-12 overflow-y-auto">
+          {/* 🌐 Giới thiệu dự án */}
+          <section>
+            <h2 className="text-3xl font-bold text-[#00B14F] mb-4">
               🌐 Giới thiệu dự án SportSpace
             </h2>
-            <p className="text-gray-700 leading-relaxed text-base">
-              Dự án web <span className="font-semibold">SportSpace</span> được phát triển nhằm mang đến
-              một nền tảng đặt sân thể thao trực tuyến tiện lợi — nơi người dùng có thể
-              dễ dàng tìm kiếm, đặt sân cầu lông, bóng đá, Pickleball và nhiều môn thể thao khác
-              phù hợp với mọi lứa tuổi.
+            <p className="text-gray-700 leading-relaxed text-lg max-w-3xl mx-auto">
+              <span className="font-semibold">SportSpace</span> là nền tảng đặt sân thể thao
+              trực tuyến hiện đại, giúp người dùng dễ dàng tìm kiếm, đặt sân cầu lông, bóng đá,
+              Pickleball và nhiều môn thể thao khác phù hợp với mọi lứa tuổi.
+              Dự án hướng tới việc mang lại trải nghiệm tiện lợi, kết nối cộng đồng yêu thể thao
+              và khuyến khích lối sống năng động.
             </p>
 
-            {/* 🖼️ Chỗ trống để bạn chèn ảnh minh họa dự án */}
-            <div className="relative w-full h-[200px] bg-gray-100 mt-4 rounded-xl overflow-hidden shadow-sm hover:scale-[1.02] transition-transform duration-300">
+            {/* 🖼️ Ảnh minh họa */}
+            <div className="relative w-full h-[260px] bg-gray-100 mt-6 rounded-2xl overflow-hidden shadow-md hover:shadow-lg hover:scale-[1.02] transition-all duration-300">
               {projectIntroImg ? (
                 <img
                   src={projectIntroImg}
@@ -207,81 +208,58 @@ const Header = () => {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="flex items-center justify-center h-full text-gray-400 italic">
+                <div className="flex items-center justify-center h-full text-gray-400 italic text-base">
                   (Ảnh giới thiệu dự án – thêm sau)
                 </div>
               )}
             </div>
-          </div>
+          </section>
 
-          {/* 🟩 Nội dung 2: Giới thiệu các môn thể thao */}
-          <div>
-            <h2 className="text-2xl font-bold text-[#00B14F] mb-3">
+          {/* ⚽ Các môn thể thao nổi bật */}
+          <section>
+            <h2 className="text-3xl font-bold text-[#00B14F] mb-4">
               ⚽ Các môn thể thao nổi bật
             </h2>
-            <p className="text-gray-700 leading-relaxed text-base mb-4">
-              Tại SportSpace, người dùng có thể tham gia nhiều hoạt động thể thao hấp dẫn:
+            <p className="text-gray-700 leading-relaxed text-lg mb-5 max-w-3xl mx-auto">
+              Tại <span className="font-semibold">SportSpace</span>, bạn có thể tham gia nhiều
+              hoạt động thể thao hấp dẫn — từ các môn truyền thống đến xu hướng mới nổi:
             </p>
 
-            <ul className="space-y-3 text-gray-700">
-              <li>
-                🏸 <strong>Cầu lông</strong>: Môn thể thao nhẹ nhàng, rèn luyện phản xạ
-                và phù hợp với mọi lứa tuổi.
-              </li>
-              <li>
-                ⚽ <strong>Bóng đá</strong>: Gắn kết đồng đội, mang lại niềm vui và năng lượng cho mỗi trận đấu.
-              </li>
-              <li>
-                🥒 <strong>Pickleball</strong>: Môn thể thao kết hợp giữa quần vợt và bóng bàn –
-                đang trở thành xu hướng mới trên toàn cầu.
-              </li>
+            <ul className="space-y-4 text-gray-700 text-left max-w-2xl mx-auto">
+              <li>🏸 <strong>Cầu lông</strong>: Rèn luyện phản xạ, phù hợp với mọi lứa tuổi.</li>
+              <li>⚽ <strong>Bóng đá</strong>: Gắn kết đồng đội, mang lại niềm vui và năng lượng.</li>
+              <li>🥒 <strong>Pickleball</strong>: Môn thể thao kết hợp giữa quần vợt và bóng bàn — xu hướng toàn cầu.</li>
             </ul>
 
-            {/* 🖼️ Các khung trống cho ảnh từng môn */}
-            <div className="grid grid-cols-3 gap-3 mt-4">
-              <div className="relative bg-gray-100 h-[120px] rounded-lg overflow-hidden shadow-sm hover:scale-105 transition-transform duration-300">
-                {badmintonImg ? (
-                  <img
-                    src={badmintonImg}
-                    alt="Cầu lông"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="flex items-center justify-center h-full text-gray-400 italic">
-                    (Ảnh cầu lông)
-                  </div>
-                )}
-              </div>
-              <div className="relative bg-gray-100 h-[120px] rounded-lg overflow-hidden shadow-sm hover:scale-105 transition-transform duration-300">
-                {footballImg ? (
-                  <img
-                    src={footballImg}
-                    alt="Bóng đá"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="flex items-center justify-center h-full text-gray-400 italic">
-                    (Ảnh bóng đá)
-                  </div>
-                )}
-              </div>
-              <div className="relative bg-gray-100 h-[120px] rounded-lg overflow-hidden shadow-sm hover:scale-105 transition-transform duration-300">
-                {pickleballImg ? (
-                  <img
-                    src={pickleballImg}
-                    alt="Pickleball"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="flex items-center justify-center h-full text-gray-400 italic">
-                    (Ảnh Pickleball)
-                  </div>
-                )}
-              </div>
+            {/* 🖼️ Các ảnh môn thể thao */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mt-6">
+              {[
+                { img: badmintonImg, alt: "Cầu lông", label: "(Ảnh cầu lông)" },
+                { img: footballImg, alt: "Bóng đá", label: "(Ảnh bóng đá)" },
+                { img: pickleballImg, alt: "Pickleball", label: "(Ảnh Pickleball)" },
+              ].map((sport, idx) => (
+                <div
+                  key={idx}
+                  className="relative bg-gray-100 h-[160px] rounded-2xl overflow-hidden shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300"
+                >
+                  {sport.img ? (
+                    <img
+                      src={sport.img}
+                      alt={sport.alt}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center h-full text-gray-400 italic">
+                      {sport.label}
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
-          </div>
+          </section>
         </div>
       </Drawer>
+
     </>
   );
 };
