@@ -11,7 +11,7 @@ const DefaultLayout = (props: DefaultLayoutProps) => {
   return (
     <div className="flex flex-col h-screen animated-bg">
       <Header />
-      <div className="flex mt-[85px] flex-1">
+      <div className="flex mt-[85px] flex-1 overflow-auto">
         <Sidebar />
         <div className="flex-1 overflow-auto ml-[76px] p-6">{children}</div>
       </div>
