@@ -85,6 +85,13 @@ export const actionCreateField = createAsyncThunk(
       formData.append("Price", data.price);
       formData.append("Description", data.description);
       formData.append("OwnerId", data.ownerId);
+       formData.append("Type", data.type || "");
+      formData.append("OpenTime", data.openTime || "");
+      formData.append("CloseTime", data.closeTime || "");
+      formData.append("OpenDays", data.openDays || "");
+      formData.append("FixedPrice", data.fixedPrice || "");
+      formData.append("Link", data.link || "");
+      formData.append("CourtDetails", data.courtDetails || "0");
 
       if (data.imageFile) {
         formData.append("ImageFile", data.imageFile); // phải trùng với DTO backend
