@@ -185,7 +185,7 @@ const Header = () => {
         open={openIntro}
         closable={false}
       >
-        <div className="px-8 py-6 text-center space-y-12 overflow-y-auto">
+        <div className="px-8 py-6 text-center space-y-12 overflow-y-auto animated-bg">
           {/* 🌐 Giới thiệu dự án */}
           <section>
             <h2 className="text-3xl font-bold text-[#00B14F] mb-4">
@@ -200,7 +200,7 @@ const Header = () => {
             </p>
 
             {/* 🖼️ Ảnh minh họa */}
-            <div className="relative w-full h-[500px] bg-gray-100 mt-6 rounded-2xl overflow-hidden shadow-md hover:shadow-lg hover:scale-[1.02] transition-all duration-300">
+            <div className="relative w-full h-[600px] bg-gray-100 mt-6 rounded-2xl overflow-hidden shadow-md hover:shadow-lg hover:scale-[1.02] transition-all duration-300">
               {projectIntroImg ? (
                 <img
                   src={projectIntroImg}
