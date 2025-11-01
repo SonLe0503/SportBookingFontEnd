@@ -17,3 +17,21 @@ body,
   background-color: rgba(0, 0, 0, 0.2);
   border-radius: 3px;
 }
+
+.animated-bg {
+  background: linear-gradient(-45deg, #00B14F, #00E09E, #3B82F6, #16A34A);
+  background-size: 400% 400%;
+  animation: gradientMove 15s ease infinite;
+}
+
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}

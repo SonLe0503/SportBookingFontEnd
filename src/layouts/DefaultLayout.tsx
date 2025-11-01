@@ -9,15 +9,14 @@ interface DefaultLayoutProps {
 const DefaultLayout = (props: DefaultLayoutProps) => {
   const { children } = props;
   return (
-    <div className="flex flex-col h-screen bg-gradient-to-br from-[#A7F3D0] via-[#6EE7B7] to-[#3B82F6] text-gray-800">
+    <div className="flex flex-col h-screen animated-bg">
       <Header />
       <div className="flex mt-[85px] flex-1">
         <Sidebar />
-        <div className="flex-1 overflow-auto ml-[76px] bg-white/70 backdrop-blur-md rounded-tl-3xl shadow-inner p-6">
-          {children}
-        </div>
+        <div className="flex-1 overflow-auto ml-[76px] p-6">{children}</div>
       </div>
     </div>
+
   );
 };
 export default DefaultLayout;

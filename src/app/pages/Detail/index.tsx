@@ -94,7 +94,7 @@ const Detail = () => {
         <div className="h-[450px] flex flex-col w-[80%] mx-2 my-2 rounded-[15px] bg-[#FFFFFF] shadow-[0_3px_10px_rgb(0,0,0,0.2)] px-2 py-2 gap-2">
           <div className="relative h-[65%] w-full rounded-[10px]">
             <img
-              src={field?.image}
+              src={`https://sportspace.io.vn${field.image}`}
               alt=""
               className="w-full h-full rounded-[10px]"
             />

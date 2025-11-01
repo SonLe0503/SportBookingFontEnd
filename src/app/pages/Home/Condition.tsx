@@ -22,7 +22,7 @@ const Condition = (props: ConditionProps) => {
             placeholder="Tìm theo tên"
             value={searchName}
             onChange={(e) => setSearchName(e.target.value)}
-            className="w-full !border-none focus:!shadow-none"
+            className="w-full !border-none focus:!shadow-none !bg-transparent"
           />
         </div>
         <Radio.Group
