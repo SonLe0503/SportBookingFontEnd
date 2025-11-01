@@ -58,10 +58,14 @@ const Header = () => {
   return (
     <>
       {/* 🔹 Header */}
-      <div className="z-20 fixed flex items-center justify-between w-full h-[80px] px-6 backdrop-blur-md border-b border-gray-100">
+      <div className="z-20 fixed flex items-center justify-between w-full h-[80px] px-6 
+  bg-gradient-to-r from-blue-900 via-purple-800 to-indigo-900 animate-gradient-x
+  backdrop-blur-md border-b border-gray-700 shadow-lg transition-all duration-300">
+
         {/* Avatar mở Drawer */}
         <div
-          className="w-[55px] h-[55px] rounded-full bg-gradient-to-tr from-[#00B14F] to-[#00E09E] p-[2px] cursor-pointer hover:scale-105 transition-transform"
+          className="w-[55px] h-[55px] rounded-full bg-gradient-to-tr from-[#00B14F] to-[#00E09E] 
+    p-[2px] cursor-pointer hover:scale-105 transition-transform shadow-md"
           onClick={showDrawer}
         >
           <div className="w-full h-full bg-white rounded-full flex items-center justify-center overflow-hidden">
@@ -73,11 +77,13 @@ const Header = () => {
           </div>
         </div>
 
-        {/* Logo */}
+        {/* Logo trung tâm */}
         <div className="flex items-center justify-center">
           <div
             onClick={handleOpenIntro}
-            className="w-[60px] h-[60px] rounded-full bg-white shadow-lg overflow-hidden flex items-center justify-center border-[3px] border-[#00B14F] hover:shadow-green-200 hover:scale-105 transition-all duration-300">
+            className="w-[60px] h-[60px] rounded-full bg-white shadow-lg overflow-hidden flex items-center justify-center 
+      border-[3px] border-[#00B14F] hover:shadow-green-200 hover:scale-105 transition-all duration-300 cursor-pointer"
+          >
             <img
               src={logo}
               alt="SportSpace logo"
@@ -86,6 +92,7 @@ const Header = () => {
           </div>
         </div>
       </div>
+
 
       {/* 🔹 Drawer hiển thị thông tin người dùng */}
       <Drawer
