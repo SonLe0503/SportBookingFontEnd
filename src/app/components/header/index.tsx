@@ -200,7 +200,7 @@ const Header = () => {
             </p>
 
             {/* 🖼️ Ảnh minh họa */}
-            <div className="relative w-full h-[260px] bg-gray-100 mt-6 rounded-2xl overflow-hidden shadow-md hover:shadow-lg hover:scale-[1.02] transition-all duration-300">
+            <div className="relative w-full h-[500px] bg-gray-100 mt-6 rounded-2xl overflow-hidden shadow-md hover:shadow-lg hover:scale-[1.02] transition-all duration-300">
               {projectIntroImg ? (
                 <img
                   src={projectIntroImg}
