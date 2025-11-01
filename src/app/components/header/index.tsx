@@ -14,12 +14,17 @@ import { Avatar, Button, Drawer, message } from "antd";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import logo from "../../../assets/image/sportspace_logo.jpeg";
+import projectIntroImg from "../../../assets/image/projectIntroImg.jpg";
+import badmintonImg from "../../../assets/image/badmintonImg.png";
+import footballImg from "../../../assets/image/footballImg.jpg";
+import pickleballImg from "../../../assets/image/pickleballImg.jpg";
 import { useNavigate } from "react-router-dom";
 import URL from "../../../constants/url";
 import { actionUploadAvatar } from "../../../store/accountSlide";
 
 const Header = () => {
   const [open, setOpen] = useState(false);
+  const [openIntro, setOpenIntro] = useState(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const infoLogin = useSelector(selectInfoLogin);
@@ -39,6 +44,15 @@ const Header = () => {
     if (file) {
       dispatch(actionUploadAvatar(file));
     }
+  };
+
+  // 🔹 Khi click logo -> mở Drawer giới thiệu
+  const handleOpenIntro = () => {
+    setOpenIntro(true);
+  };
+
+  const handleCloseIntro = () => {
+    setOpenIntro(false);
   };
 
   return (
@@ -61,7 +75,9 @@ const Header = () => {
 
         {/* Logo */}
         <div className="flex items-center justify-center">
-          <div className="w-[60px] h-[60px] rounded-full bg-white shadow-lg overflow-hidden flex items-center justify-center border-[3px] border-[#00B14F] hover:shadow-green-200 hover:scale-105 transition-all duration-300">
+          <div
+            onClick={handleOpenIntro}
+            className="w-[60px] h-[60px] rounded-full bg-white shadow-lg overflow-hidden flex items-center justify-center border-[3px] border-[#00B14F] hover:shadow-green-200 hover:scale-105 transition-all duration-300">
             <img
               src={logo}
               alt="SportSpace logo"
@@ -160,6 +176,111 @@ const Header = () => {
             </Button>
           </div>
         )}
+      </Drawer>
+      {/* 🔹 Drawer giới thiệu dự án */}
+      <Drawer
+        placement="bottom" // 👉 đổi thành "top" nếu bạn muốn mở từ trên xuống
+        height="85vh"
+        onClose={handleCloseIntro}
+        open={openIntro}
+        closable={false}
+      >
+        <div className="px-6 py-4 text-center space-y-8">
+          {/* 🟩 Nội dung 1: Giới thiệu dự án */}
+          <div>
+            <h2 className="text-2xl font-bold text-[#00B14F] mb-3">
+              🌐 Giới thiệu dự án SportSpace
+            </h2>
+            <p className="text-gray-700 leading-relaxed text-base">
+              Dự án web <span className="font-semibold">SportSpace</span> được phát triển nhằm mang đến
+              một nền tảng đặt sân thể thao trực tuyến tiện lợi — nơi người dùng có thể
+              dễ dàng tìm kiếm, đặt sân cầu lông, bóng đá, Pickleball và nhiều môn thể thao khác
+              phù hợp với mọi lứa tuổi.
+            </p>
+
+            {/* 🖼️ Chỗ trống để bạn chèn ảnh minh họa dự án */}
+            <div className="relative w-full h-[200px] bg-gray-100 mt-4 rounded-xl overflow-hidden shadow-sm hover:scale-[1.02] transition-transform duration-300">
+              {projectIntroImg ? (
+                <img
+                  src={projectIntroImg}
+                  alt="Giới thiệu dự án SportSpace"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="flex items-center justify-center h-full text-gray-400 italic">
+                  (Ảnh giới thiệu dự án – thêm sau)
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* 🟩 Nội dung 2: Giới thiệu các môn thể thao */}
+          <div>
+            <h2 className="text-2xl font-bold text-[#00B14F] mb-3">
+              ⚽ Các môn thể thao nổi bật
+            </h2>
+            <p className="text-gray-700 leading-relaxed text-base mb-4">
+              Tại SportSpace, người dùng có thể tham gia nhiều hoạt động thể thao hấp dẫn:
+            </p>
+
+            <ul className="space-y-3 text-gray-700">
+              <li>
+                🏸 <strong>Cầu lông</strong>: Môn thể thao nhẹ nhàng, rèn luyện phản xạ
+                và phù hợp với mọi lứa tuổi.
+              </li>
+              <li>
+                ⚽ <strong>Bóng đá</strong>: Gắn kết đồng đội, mang lại niềm vui và năng lượng cho mỗi trận đấu.
+              </li>
+              <li>
+                🥒 <strong>Pickleball</strong>: Môn thể thao kết hợp giữa quần vợt và bóng bàn –
+                đang trở thành xu hướng mới trên toàn cầu.
+              </li>
+            </ul>
+
+            {/* 🖼️ Các khung trống cho ảnh từng môn */}
+            <div className="grid grid-cols-3 gap-3 mt-4">
+              <div className="relative bg-gray-100 h-[120px] rounded-lg overflow-hidden shadow-sm hover:scale-105 transition-transform duration-300">
+                {badmintonImg ? (
+                  <img
+                    src={badmintonImg}
+                    alt="Cầu lông"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="flex items-center justify-center h-full text-gray-400 italic">
+                    (Ảnh cầu lông)
+                  </div>
+                )}
+              </div>
+              <div className="relative bg-gray-100 h-[120px] rounded-lg overflow-hidden shadow-sm hover:scale-105 transition-transform duration-300">
+                {footballImg ? (
+                  <img
+                    src={footballImg}
+                    alt="Bóng đá"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="flex items-center justify-center h-full text-gray-400 italic">
+                    (Ảnh bóng đá)
+                  </div>
+                )}
+              </div>
+              <div className="relative bg-gray-100 h-[120px] rounded-lg overflow-hidden shadow-sm hover:scale-105 transition-transform duration-300">
+                {pickleballImg ? (
+                  <img
+                    src={pickleballImg}
+                    alt="Pickleball"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="flex items-center justify-center h-full text-gray-400 italic">
+                    (Ảnh Pickleball)
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
       </Drawer>
     </>
   );
