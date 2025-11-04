@@ -23,52 +23,66 @@ const statusColors: Record<Status, string> = {
   event: "bg-purple-400",
 };
 
-// const pricePerSlot = 100000;
-
 const ManageBooking = () => {
   const dispatch = useAppDispatch();
-
   const { userId } = useSelector(selectInfoLogin);
   const fields = useSelector(selectFields);
   const bookings = useSelector(selectBookingList);
 
-  const [selected, setSelected] = useState<{ court: string; hour: string }[]>(
-    []
-  );
+  const [selected, setSelected] = useState<{ court: string; hour: string }[]>([]);
   const [selectedFieldId, setSelectedFieldId] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalInfo, setModalInfo] = useState(false);
 
-  const pricePerSlot = useMemo(() => {
-  const selectedField = fields.find((f) => f.fieldId === selectedFieldId);
-  return selectedField ? (selectedField.price || 0) / 2 : 0;
-}, [fields, selectedFieldId]);
+  // Ngày hiện tại hoặc chọn
+  const [selectedDate, setSelectedDate] = useState(() => {
+    const today = new Date();
+    return today.toISOString().slice(0, 10); // 'YYYY-MM-DD'
+  });
 
-  const courts = useMemo(() => {
-  const selectedField = fields.find((f) => f.fieldId === selectedFieldId);
-  const courtCount = Number(selectedField?.courtDetails || 0); // "6" -> 6
-  if (isNaN(courtCount) || courtCount <= 0) return [];
-  return Array.from({ length: courtCount }, (_, i) => `Sân ${i + 1}`);
-}, [fields, selectedFieldId]);
+  // Tự động cập nhật ngày mới
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const today = new Date().toISOString().slice(0, 10);
+      if (today !== selectedDate) setSelectedDate(today);
+    }, 60 * 1000);
+    return () => clearInterval(interval);
+  }, [selectedDate]);
 
+  // Lấy dữ liệu sân và booking
   useEffect(() => {
     dispatch(actionGetFields());
     dispatch(actionGetBookings());
   }, [dispatch]);
 
-  // 🟢 Lọc danh sách sân thuộc về chủ sân
+  // Lọc danh sách sân thuộc về chủ sân
   const ownerFields = useMemo(
     () => fields.filter((f) => f.ownerId === Number(userId)),
     [fields, userId]
   );
 
-  // 🟢 Lọc danh sách booking theo sân được chọn
+  // Lọc booking theo sân + ngày
   const fieldBookings = useMemo(() => {
     if (!selectedFieldId) return [];
-    return bookings.filter((b) => b.fieldId === selectedFieldId);
-  }, [bookings, selectedFieldId]);
+    return bookings.filter(
+      (b) => b.fieldId === selectedFieldId && b.bookingDate === selectedDate
+    );
+  }, [bookings, selectedFieldId, selectedDate]);
 
-  // 🟢 Khi chọn sân
+  // Lấy số lượng sân động
+  const courts = useMemo(() => {
+    const selectedField = fields.find((f) => f.fieldId === selectedFieldId);
+    const courtCount = Number(selectedField?.courtDetails || 0);
+    if (isNaN(courtCount) || courtCount <= 0) return [];
+    return Array.from({ length: courtCount }, (_, i) => `Sân ${i + 1}`);
+  }, [fields, selectedFieldId]);
+
+  // Giá mỗi slot
+  const pricePerSlot = useMemo(() => {
+    const selectedField = fields.find((f) => f.fieldId === selectedFieldId);
+    return selectedField ? (selectedField.price || 0) / 2 : 0;
+  }, [fields, selectedFieldId]);
+
   const handleSelectField = (fieldId: number) => {
     setSelectedFieldId(fieldId);
     setSelected([]); // reset chọn khung giờ
@@ -76,7 +90,6 @@ const ManageBooking = () => {
 
   const handleSelected = (court: string, hour: string, status: Status) => {
     if (status === "empty") {
-      // chọn hoặc bỏ chọn
       const exists = selected.some((s) => s.court === court && s.hour === hour);
       if (exists) {
         setSelected((prev) =>
@@ -86,7 +99,6 @@ const ManageBooking = () => {
         setSelected((prev) => [...prev, { court, hour }]);
       }
     } else if (status === "booked") {
-      // 🟢 Lấy booking chi tiết tương ứng
       const booked = fieldBookings.find(
         (b) => b.startTime <= hour && b.endTime > hour
       );
@@ -117,6 +129,13 @@ const ManageBooking = () => {
               value: f.fieldId,
             }))}
           />
+          {/* Chọn ngày */}
+          <input
+            type="date"
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+            className="border p-1 rounded"
+          />
         </div>
 
         {!selectedFieldId ? (
@@ -133,7 +152,6 @@ const ManageBooking = () => {
                 <Tag color="purple">Sự kiện</Tag>
               </div>
 
-              {/* 🟢 Bảng lịch */}
               <div className="overflow-x-auto mt-4 p-2">
                 <table className="border-collapse">
                   <thead>
@@ -156,7 +174,6 @@ const ManageBooking = () => {
                           {c}
                         </td>
                         {hours.map((h) => {
-                          // 🟢 Kiểm tra xem khung giờ có booking không
                           const isBooked = fieldBookings.some(
                             (b) => b.startTime <= h && b.endTime > h
                           );
@@ -189,6 +206,7 @@ const ManageBooking = () => {
           />
         )}
       </div>
+
       <ModalBookingInfo modalInfo={modalInfo} setModalInfo={setModalInfo} />
       <ModalBooking
         isModalOpen={isModalOpen}
