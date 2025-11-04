@@ -29,61 +29,61 @@ const Booking = () => {
   const dispatch = useAppDispatch();
   const bookingList = useSelector(selectBookingList);
   const fieldDetail = useSelector(selectSelectedField);
+
+  // Validate fieldId
+  const fieldId = Number(id);
+  if (isNaN(fieldId)) {
+    return <div className="text-center p-4">Không tìm thấy sân</div>;
+  }
+
   const pricePerSlot = (fieldDetail?.price || 0) / 2;
 
-  const [selected, setSelected] = useState<{ court: string; hour: string }[]>(
-    []
-  );
+  const [selected, setSelected] = useState<{ court: string; hour: string }[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Ngày hiện tại hoặc ngày được chọn
+  // Ngày hiện tại
   const [selectedDate, setSelectedDate] = useState(() => {
     const today = new Date();
-    return today.toISOString().slice(0, 10); // 'YYYY-MM-DD'
+    return today.toISOString().slice(0, 10);
   });
 
-  // Tự động cập nhật ngày khi sang ngày mới
+  // Cập nhật ngày tự động
   useEffect(() => {
     const interval = setInterval(() => {
       const today = new Date().toISOString().slice(0, 10);
       if (today !== selectedDate) setSelectedDate(today);
-    }, 60 * 1000); // kiểm tra mỗi 1 phút
+    }, 60 * 1000);
     return () => clearInterval(interval);
   }, [selectedDate]);
 
   // Load booking và thông tin sân
   useEffect(() => {
     dispatch(actionGetBookings());
-    if (id) {
-      dispatch(actionGetDetailField(Number(id)));
-    }
-  }, [dispatch, id]);
+    dispatch(actionGetDetailField(fieldId));
+  }, [dispatch, fieldId]);
 
-  // Số lượng sân động từ fieldDetail.courtDetails
+  // Số lượng sân động
   const courts = useMemo(() => {
     if (!fieldDetail) return [];
     const count = Number(fieldDetail.courtDetails);
     if (isNaN(count) || count <= 0) return [];
-    return Array.from({ length: count }, (_, i) =>
-      String.fromCharCode(65 + i)
-    ); // "A","B","C"...
+    return Array.from({ length: count }, (_, i) => String.fromCharCode(65 + i));
   }, [fieldDetail]);
 
-  // Lọc booking theo fieldId + ngày
+  // Lọc booking theo sân + ngày
   const fieldBookings = useMemo(() => {
-    if (!id) return [];
     return bookingList.filter(
-      (b) => b.fieldId === Number(id) && b.bookingDate === selectedDate
+      (b) => b.fieldId === fieldId && b.bookingDate === selectedDate
     );
-  }, [bookingList, id, selectedDate]);
+  }, [bookingList, fieldId, selectedDate]);
 
-  // Chuyển dữ liệu booking thành dạng bảng
+  // Chuyển booking sang dạng bảng
   const bookingData: Record<string, Record<string, Status>> = useMemo(() => {
     const data: Record<string, Record<string, Status>> = {};
     courts.forEach((court) => (data[court] = {}));
 
     fieldBookings.forEach((b) => {
-      const court = b.status === "locked" ? courts[0] : courts[0]; // TODO: sửa khi API có courtName
+      const court = courts[0]; // TODO: sửa khi API có courtName
       const startHour = b.startTime.slice(0, 5);
       const endHour = b.endTime.slice(0, 5);
       const startIndex = hours.indexOf(startHour);
@@ -98,6 +98,7 @@ const Booking = () => {
     return data;
   }, [fieldBookings, courts]);
 
+  // Chọn/ bỏ chọn ô
   const handleSelected = (court: string, hour: string, status: Status) => {
     if (status !== "empty") return;
     const exists = selected.some((s) => s.court === court && s.hour === hour);
@@ -119,7 +120,7 @@ const Booking = () => {
   return (
     <>
       <div className="w-full flex flex-col min-h-full justify-between">
-        <div className="m-2 rounded-[15px] flex bg-[#FFFFFF ] shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
+        <div className="m-2 rounded-[15px] flex bg-[#FFFFFF] shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
           <div className="w-full">
             <div className="flex justify-center items-center">
               <div className="font-bold text-[25px]">Đặt lịch ngày trực quan</div>
@@ -166,9 +167,7 @@ const Booking = () => {
                       </td>
                       {hours.map((h) => {
                         const status: Status = bookingData[c]?.[h] || "empty";
-                        const selectedClass = isSelected(c, h)
-                          ? "!bg-blue-500"
-                          : "";
+                        const selectedClass = isSelected(c, h) ? "!bg-blue-500" : "";
                         return (
                           <td
                             key={h}
@@ -183,7 +182,7 @@ const Booking = () => {
               </table>
             </div>
 
-            <div className="flex justify-center bottom-2 ">
+            <div className="flex justify-center bottom-2">
               <div className="text-red-500">
                 Lưu ý: Nếu bạn cần đặt lịch cố định vui lòng liên hệ: 0374.857.068
               </div>
@@ -206,7 +205,7 @@ const Booking = () => {
         totalHour={totalHour}
         totalPrice={totalPrice}
         selected={selected}
-        fieldId={Number(id)}
+        fieldId={fieldId}
       />
     </>
   );
