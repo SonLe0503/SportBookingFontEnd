@@ -8,11 +8,7 @@ import { useAppDispatch } from "../../../../../store";
 import { useSelector } from "react-redux";
 import { selectInfoLogin } from "../../../../../store/authSlide";
 import { actionGetFields, selectFields } from "../../../../../store/fieldSlide";
-import {
-  actionGetBooking,
-  actionGetBookings,
-  selectBookingList,
-} from "../../../../../store/bookingSlide";
+import { actionGetBooking, actionGetBookings, selectBookingList } from "../../../../../store/bookingSlide";
 
 type Status = "empty" | "booked" | "locked" | "event";
 
@@ -22,6 +18,9 @@ const statusColors: Record<Status, string> = {
   locked: "bg-yellow-400",
   event: "bg-purple-400",
 };
+
+// 🔹 Fix cứng courts giống Booking.tsx
+const courts: string[] = ["A", "B", "C", "D", "E", "F"];
 
 const ManageBooking = () => {
   const dispatch = useAppDispatch();
@@ -68,14 +67,6 @@ const ManageBooking = () => {
       (b) => b.fieldId === selectedFieldId && b.bookingDate === selectedDate
     );
   }, [bookings, selectedFieldId, selectedDate]);
-
-  // Lấy số lượng sân động
-  const courts = useMemo(() => {
-    const selectedField = fields.find((f) => f.fieldId === selectedFieldId);
-    const courtCount = Number(selectedField?.courtDetails || 0);
-    if (isNaN(courtCount) || courtCount <= 0) return [];
-    return Array.from({ length: courtCount }, (_, i) => `Sân ${i + 1}`);
-  }, [fields, selectedFieldId]);
 
   // Giá mỗi slot
   const pricePerSlot = useMemo(() => {
@@ -208,14 +199,16 @@ const ManageBooking = () => {
       </div>
 
       <ModalBookingInfo modalInfo={modalInfo} setModalInfo={setModalInfo} />
-      <ModalBooking
-        isModalOpen={isModalOpen}
-        setIsModalOpen={setIsModalOpen}
-        totalHour={totalHour}
-        totalPrice={totalPrice}
-        selected={selected}
-        fieldId={selectedFieldId!}
-      />
+      {selectedFieldId && (
+        <ModalBooking
+          isModalOpen={isModalOpen}
+          setIsModalOpen={setIsModalOpen}
+          totalHour={totalHour}
+          totalPrice={totalPrice}
+          selected={selected}
+          fieldId={selectedFieldId}
+        />
+      )}
     </>
   );
 };
